@@ -311,13 +311,19 @@ void startupCM7(uint8_t coreNo)
         printf("y\r\nErasing...\r\n");
 
         /* Initialization */
-        CY_ASSERT(cyhal_flash_init(&cyhal_flash) == CY_RSLT_SUCCESS);
+        if (cyhal_flash_init(&cyhal_flash) != CY_RSLT_SUCCESS)
+        {
+            CY_ASSERT(0);
+        }
 
         /* Enable code flash write function */
         Cy_Flashc_MainWriteEnable();
 
         /* Erase code flash target sector */
-        CY_ASSERT(cyhal_flash_erase(&cyhal_flash, topAddress + SECTOR_SIZE) == CY_RSLT_SUCCESS);
+        if (cyhal_flash_erase(&cyhal_flash, topAddress + SECTOR_SIZE) != CY_RSLT_SUCCESS)
+        {
+            CY_ASSERT(0);
+        }
 
         printf("done\r\n");
     }
@@ -354,13 +360,19 @@ void startupCM7(uint8_t coreNo)
 int main(void)
 {
     /* Initialize the device and board peripherals */
-    CY_ASSERT(cybsp_init() == CY_RSLT_SUCCESS);
+    if (cybsp_init() != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
 
     /* Enable global interrupts */
     __enable_irq();
 
     /* Initialize retarget-io to use the debug UART port */
-    CY_ASSERT(cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX, CY_RETARGET_IO_BAUDRATE) == CY_RSLT_SUCCESS);
+    if (cy_retarget_io_init(CYBSP_DEBUG_UART_TX, CYBSP_DEBUG_UART_RX, CY_RETARGET_IO_BAUDRATE) != CY_RSLT_SUCCESS)
+    {
+        CY_ASSERT(0);
+    }
 
     /* \x1b[2J\x1b[;H - ANSI ESC sequence for clear screen */
     printf("\x1b[2J\x1b[;H");
